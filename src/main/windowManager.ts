@@ -16,6 +16,10 @@ const SHOW_DELAY = 80          // 显示延迟（毫秒）
 const DETECT_RANGE = 30        // 鼠标接近边条多少像素时触发显示
 const AUTO_HIDE_DELAY = 800    // 展开后无操作自动隐藏的延迟（毫秒）
 
+// 性能优化：动态轮询间隔
+const HIDDEN_POLL_INTERVAL = 100   // 隐藏状态：~10fps，降低CPU占用
+const VISIBLE_POLL_INTERVAL = 33   // 显示状态：~30fps，保持响应性
+
 export function setupWindowManager(): BrowserWindow {
   const settings = getSettings()
 
@@ -70,108 +74,131 @@ export function setupWindowManager(): BrowserWindow {
     startMouseChecker(win)
   })
 
-  // 鼠标检测 - 同时处理：隐藏时检测显示、显示时检测自动隐藏
+  // 优化：动态轮询间隔 - 隐藏状态低频，显示状态正常
   function startMouseChecker(window: BrowserWindow): void {
     let mouseWasInWindow = false
 
     // 清除之前的定时器（如果存在）
     if (mouseCheckTimer) {
       clearInterval(mouseCheckTimer)
+      mouseCheckTimer = null
     }
 
-    mouseCheckTimer = setInterval(() => {
-      // 检查窗口是否已销毁
-      if (window.isDestroyed()) {
-        if (mouseCheckTimer) {
-          clearInterval(mouseCheckTimer)
-          mouseCheckTimer = null
-        }
-        return
+    // 动态调整轮询间隔的函数
+    function startPollingWithInterval(interval: number): void {
+      if (mouseCheckTimer) {
+        clearInterval(mouseCheckTimer)
       }
 
-      const mouse = screen.getCursorScreenPoint()
-      const bounds = window.getBounds()
-
-      // 判断鼠标是否在窗口范围内
-      const mouseInWindow = (
-        mouse.x >= bounds.x && mouse.x < bounds.x + bounds.width &&
-        mouse.y >= bounds.y && mouse.y < bounds.y + bounds.height
-      )
-
-      if (isAutoHidden && hiddenEdge) {
-        // 隐藏状态：检测鼠标是否接近边条
-        // 获取当前模式的窄条配置
-        const settings = getSettings()
-        const mode = settings.displayMode || 'standard'
-        const config = DISPLAY_MODE_CONFIGS[mode]
-        const currentStripSize = hiddenEdge === 'left' || hiddenEdge === 'right'
-          ? config.stripWidth
-          : config.stripHeight
-
-        let shouldShow = false
-
-        switch (hiddenEdge) {
-          case 'left':
-            shouldShow = mouse.x >= originalBounds.x - DETECT_RANGE &&
-                         mouse.x < originalBounds.x + currentStripSize + DETECT_RANGE
-            break
-          case 'right':
-            shouldShow = mouse.x >= originalBounds.x + originalBounds.width - currentStripSize - DETECT_RANGE &&
-                         mouse.x < originalBounds.x + originalBounds.width - currentStripSize + DETECT_RANGE
-            break
-          case 'top':
-            shouldShow = mouse.y >= originalBounds.y - DETECT_RANGE &&
-                         mouse.y < originalBounds.y + currentStripSize + DETECT_RANGE
-            break
-          case 'bottom':
-            shouldShow = mouse.y >= originalBounds.y + originalBounds.height - currentStripSize - DETECT_RANGE &&
-                         mouse.y < originalBounds.y + originalBounds.height - currentStripSize + DETECT_RANGE
-            break
-        }
-
-        if (shouldShow) {
-          showFromEdge(window)
-        }
-      } else if (!isAutoHidden && window.isVisible()) {
-        // 显示状态：检测是否需要自动隐藏
-
-        if (mouseInWindow) {
-          // 鼠标在窗口内，取消自动隐藏
-          mouseWasInWindow = true
-          if (autoHideTimer) {
-            clearTimeout(autoHideTimer)
-            autoHideTimer = null
+      mouseCheckTimer = setInterval(() => {
+        // 检查窗口是否已销毁
+        if (window.isDestroyed()) {
+          if (mouseCheckTimer) {
+            clearInterval(mouseCheckTimer)
+            mouseCheckTimer = null
           }
-        } else {
-          // 鼠标不在窗口内
-          if (mouseWasInWindow) {
-            // 鼠标刚离开窗口，启动自动隐藏定时器
-            mouseWasInWindow = false
-            if (autoHideTimer) clearTimeout(autoHideTimer)
-            autoHideTimer = setTimeout(() => {
-              if (window.isDestroyed()) return
-              if (window.isVisible() && !isAutoHidden) {
-                // 检查窗口是否贴边
-                const [wx, wy] = window.getPosition()
-                const [ww, wh] = window.getSize()
-                const display = screen.getDisplayNearestPoint({ x: wx, y: wy })
-                const { width: sw, height: sh, x: sx, y: sy } = display.workArea
+          return
+        }
 
-                let edge: 'left' | 'right' | 'top' | 'bottom' | null = null
-                if (wx <= sx + EDGE_THRESHOLD) edge = 'left'
-                else if (wy <= sy + EDGE_THRESHOLD) edge = 'top'
-                else if (wx + ww >= sx + sw - EDGE_THRESHOLD) edge = 'right'
-                else if (wy + wh >= sy + sh - EDGE_THRESHOLD) edge = 'bottom'
+        const mouse = screen.getCursorScreenPoint()
+        const bounds = window.getBounds()
 
-                if (edge) {
-                  hideToEdge(window, edge)
+        // 判断鼠标是否在窗口范围内
+        const mouseInWindow = (
+          mouse.x >= bounds.x && mouse.x < bounds.x + bounds.width &&
+          mouse.y >= bounds.y && mouse.y < bounds.y + bounds.height
+        )
+
+        if (isAutoHidden && hiddenEdge) {
+          // 隐藏状态：检测鼠标是否接近边条
+          // 获取当前模式的窄条配置
+          const settings = getSettings()
+          const mode = settings.displayMode || 'standard'
+          const config = DISPLAY_MODE_CONFIGS[mode]
+          const currentStripSize = hiddenEdge === 'left' || hiddenEdge === 'right'
+            ? config.stripWidth
+            : config.stripHeight
+
+          let shouldShow = false
+
+          switch (hiddenEdge) {
+            case 'left':
+              shouldShow = mouse.x >= originalBounds.x - DETECT_RANGE &&
+                           mouse.x < originalBounds.x + currentStripSize + DETECT_RANGE
+              break
+            case 'right':
+              shouldShow = mouse.x >= originalBounds.x + originalBounds.width - currentStripSize - DETECT_RANGE &&
+                           mouse.x < originalBounds.x + originalBounds.width - currentStripSize + DETECT_RANGE
+              break
+            case 'top':
+              shouldShow = mouse.y >= originalBounds.y - DETECT_RANGE &&
+                           mouse.y < originalBounds.y + currentStripSize + DETECT_RANGE
+              break
+            case 'bottom':
+              shouldShow = mouse.y >= originalBounds.y + originalBounds.height - currentStripSize - DETECT_RANGE &&
+                           mouse.y < originalBounds.y + originalBounds.height - currentStripSize + DETECT_RANGE
+              break
+          }
+
+          if (shouldShow) {
+            showFromEdge(window)
+            // 切换到显示状态的高频轮询
+            startPollingWithInterval(VISIBLE_POLL_INTERVAL)
+          }
+        } else if (!isAutoHidden && window.isVisible()) {
+          // 显示状态：检测是否需要自动隐藏
+          if (mouseInWindow) {
+            // 鼠标在窗口内，取消自动隐藏
+            mouseWasInWindow = true
+            if (autoHideTimer) {
+              clearTimeout(autoHideTimer)
+              autoHideTimer = null
+            }
+          } else {
+            // 鼠标不在窗口内
+            if (mouseWasInWindow) {
+              // 鼠标刚离开窗口，启动自动隐藏定时器
+              mouseWasInWindow = false
+              if (autoHideTimer) clearTimeout(autoHideTimer)
+              const settings = getSettings()
+              const hideDelay = settings.edgeHideSettings?.hideDelay ?? AUTO_HIDE_DELAY
+              autoHideTimer = setTimeout(() => {
+                if (window.isDestroyed()) return
+                if (window.isVisible() && !isAutoHidden) {
+                  // 检查窗口是否贴边
+                  const [wx, wy] = window.getPosition()
+                  const [ww, wh] = window.getSize()
+                  const display = screen.getDisplayNearestPoint({ x: wx, y: wy })
+                  const { width: sw, height: sh, x: sx, y: sy } = display.workArea
+
+                  const settingsInner = getSettings()
+                  const threshold = settingsInner.edgeHideSettings?.threshold ?? EDGE_THRESHOLD
+                  let edge: 'left' | 'right' | 'top' | 'bottom' | null = null
+
+                  if (wx <= sx + threshold) edge = 'left'
+                  else if (wy <= sy + threshold) edge = 'top'
+                  else if (wx + ww >= sx + sw - threshold) edge = 'right'
+                  else if (wy + wh >= sy + sh - threshold) edge = 'bottom'
+
+                  if (edge) {
+                    // 检查该方向是否启用
+                    const directions = settingsInner.edgeHideSettings?.directions ?? ['left', 'right', 'top', 'bottom']
+                    if (directions.includes(edge)) {
+                      hideToEdge(window, edge)
+                      // 切换到隐藏状态的低频轮询
+                      startPollingWithInterval(HIDDEN_POLL_INTERVAL)
+                    }
+                  }
                 }
-              }
-            }, AUTO_HIDE_DELAY)
+              }, hideDelay)
+            }
           }
         }
-      }
-    }, 16) // ~60fps
+      }, interval)
+    }
+
+    // 初始启动为正常频率
+    startPollingWithInterval(VISIBLE_POLL_INTERVAL)
   }
 
   function hideToEdge(window: BrowserWindow, edge: 'left' | 'right' | 'top' | 'bottom'): void {
@@ -250,13 +277,17 @@ export function setupWindowManager(): BrowserWindow {
     const display = screen.getDisplayNearestPoint({ x, y })
     const { width: sw, height: sh, x: sx, y: sy } = display.workArea
 
+    // 使用配置的阈值
+    const threshold = currentSettings.edgeHideSettings?.threshold ?? EDGE_THRESHOLD
+    const directions = currentSettings.edgeHideSettings?.directions ?? ['left', 'right', 'top', 'bottom']
+
     // 检测贴边方向
     let edge: 'left' | 'right' | 'top' | 'bottom' | null = null
 
-    if (x <= sx + EDGE_THRESHOLD) edge = 'left'
-    else if (y <= sy + EDGE_THRESHOLD) edge = 'top'
-    else if (x + width >= sx + sw - EDGE_THRESHOLD) edge = 'right'
-    else if (y + height >= sy + sh - EDGE_THRESHOLD) edge = 'bottom'
+    if (x <= sx + threshold && directions.includes('left')) edge = 'left'
+    else if (y <= sy + threshold && directions.includes('top')) edge = 'top'
+    else if (x + width >= sx + sw - threshold && directions.includes('right')) edge = 'right'
+    else if (y + height >= sy + sh - threshold && directions.includes('bottom')) edge = 'bottom'
 
     if (edge) {
       hideToEdge(win, edge)

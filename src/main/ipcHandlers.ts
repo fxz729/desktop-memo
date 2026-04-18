@@ -1,7 +1,7 @@
 import { ipcMain, app, BrowserWindow, globalShortcut } from 'electron'
 import {
   getMemos, saveMemos, addMemo, updateMemo, deleteMemo,
-  getCategories, saveCategories, addCategory, deleteCategory,
+  getCategories, saveCategories, addCategory, updateCategory, deleteCategory,
   getSettings, saveSettings
 } from './storeManager'
 import { setWindowOpacity, setWindowAlwaysOnTop, resetWindowPosition, setWindowBounds, setDisplayMode } from './windowManager'
@@ -97,6 +97,10 @@ export function registerIpcHandlers(): void {
     deleteCategory(id)
   })
 
+  ipcMain.handle('category:update', (_, id: string, updates: Partial<Category>) => {
+    return updateCategory(id, updates)
+  })
+
   // ========== Settings ==========
   ipcMain.handle('settings:get', () => getSettings())
 
@@ -109,12 +113,100 @@ export function registerIpcHandlers(): void {
   })
 
   ipcMain.handle('settings:setAutoStart', (_, enable: boolean) => {
-    app.setLoginItemSettings({
-      openAtLogin: enable,
-      args: enable ? ['--hidden'] : []
-    })
-    const currentSettings = getSettings()
-    saveSettings({ ...currentSettings, autoStart: enable })
+    try {
+      // 开机自启时传递 --hidden 参数，让窗口启动时隐藏
+      app.setLoginItemSettings({
+        openAtLogin: enable,
+        args: enable ? ['--hidden'] : []
+      })
+      const currentSettings = getSettings()
+      saveSettings({ ...currentSettings, autoStart: enable })
+      return { success: true }
+    } catch (error) {
+      console.error('Failed to set auto-start:', error)
+      return { success: false, error: (error as Error).message }
+    }
+  })
+
+  // ========== 导入/导出 ==========
+  ipcMain.handle('memo:export', async () => {
+    try {
+      const { dialog } = await import('electron')
+      const memos = getMemos()
+      const categories = getCategories()
+      const settings = getSettings()
+
+      const result = await dialog.showSaveDialog({
+        title: '导出备忘录',
+        defaultPath: `memo-backup-${new Date().toISOString().slice(0, 10)}.json`,
+        filters: [{ name: 'JSON', extensions: ['json'] }]
+      })
+
+      if (result.canceled || !result.filePath) {
+        return { success: false, canceled: true }
+      }
+
+      const fs = await import('fs')
+      const data = JSON.stringify({ memos, categories, settings, exportedAt: Date.now() }, null, 2)
+      await fs.promises.writeFile(result.filePath, data, 'utf-8')
+
+      return { success: true, path: result.filePath }
+    } catch (error) {
+      console.error('Failed to export memos:', error)
+      return { success: false, error: (error as Error).message }
+    }
+  })
+
+  ipcMain.handle('memo:import', async () => {
+    try {
+      const { dialog } = await import('electron')
+      const result = await dialog.showOpenDialog({
+        title: '导入备忘录',
+        filters: [{ name: 'JSON', extensions: ['json'] }],
+        properties: ['openFile']
+      })
+
+      if (result.canceled || result.filePaths.length === 0) {
+        return { success: false, canceled: true }
+      }
+
+      const fs = await import('fs')
+      const data = await fs.promises.readFile(result.filePaths[0], 'utf-8')
+      const parsed = JSON.parse(data)
+
+      // 验证数据格式
+      if (!parsed.memos || !Array.isArray(parsed.memos)) {
+        return { success: false, error: 'Invalid backup file format' }
+      }
+
+      // 合并分类（避免重复）
+      const existingCategories = getCategories()
+      const existingNames = existingCategories.map(c => c.name)
+      const newCategories = (parsed.categories || []).filter((c: Category) => !existingNames.includes(c.name))
+
+      for (const cat of newCategories) {
+        addCategory(cat)
+      }
+
+      // 合并备忘录（避免ID重复）
+      const existingMemoIds = getMemos().map(m => m.id)
+      const newMemos = parsed.memos.filter((m: Memo) => !existingMemoIds.includes(m.id))
+
+      for (const memo of newMemos) {
+        addMemo(memo)
+      }
+
+      return {
+        success: true,
+        imported: {
+          memos: newMemos.length,
+          categories: newCategories.length
+        }
+      }
+    } catch (error) {
+      console.error('Failed to import memos:', error)
+      return { success: false, error: (error as Error).message }
+    }
   })
 
   // ========== Window Controls ==========

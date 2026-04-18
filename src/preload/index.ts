@@ -8,16 +8,20 @@ export interface ElectronAPI {
     update: (id: string, updates: Partial<Memo>) => Promise<Memo | null>
     delete: (id: string) => Promise<void>
     complete: (id: string) => Promise<Memo | null>
+    export: () => Promise<{ success: boolean; path?: string; canceled?: boolean; error?: string }>
+    import: () => Promise<{ success: boolean; imported?: { memos: number; categories: number }; canceled?: boolean; error?: string }>
   }
   category: {
     getAll: () => Promise<Category[]>
     create: (category: Category) => Promise<Category>
+    update: (id: string, updates: Partial<Category>) => Promise<Category | null>
     delete: (id: string) => Promise<void>
   }
   settings: {
     get: () => Promise<AppSettings>
     save: (settings: AppSettings) => Promise<void>
-    setAutoStart: (enable: boolean) => Promise<void>
+    setAutoStart: (enable: boolean) => Promise<{ success: boolean; error?: string }>
+    refreshShortcuts: () => Promise<void>
   }
   window: {
     setOpacity: (opacity: number) => Promise<void>
@@ -38,11 +42,14 @@ const api: ElectronAPI = {
     create: (memo) => ipcRenderer.invoke('memo:create', memo),
     update: (id, updates) => ipcRenderer.invoke('memo:update', id, updates),
     delete: (id) => ipcRenderer.invoke('memo:delete', id),
-    complete: (id) => ipcRenderer.invoke('memo:complete', id)
+    complete: (id) => ipcRenderer.invoke('memo:complete', id),
+    export: () => ipcRenderer.invoke('memo:export'),
+    import: () => ipcRenderer.invoke('memo:import')
   },
   category: {
     getAll: () => ipcRenderer.invoke('category:getAll'),
     create: (category) => ipcRenderer.invoke('category:create', category),
+    update: (id, updates) => ipcRenderer.invoke('category:update', id, updates),
     delete: (id) => ipcRenderer.invoke('category:delete', id)
   },
   settings: {

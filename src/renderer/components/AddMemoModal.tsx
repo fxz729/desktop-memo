@@ -68,14 +68,8 @@ export default function AddMemoModal() {
             <h2 className="modal-title">{editingMemo ? '编辑备忘录' : '新增备忘录'}</h2>
             <button
               onClick={closeAddModal}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                color: 'var(--text-muted)',
-                display: 'flex',
-                padding: '4px'
-              }}
+              className="memo-action-btn"
+              style={{ boxShadow: 'none' }}
             >
               <X size={16} />
             </button>

@@ -85,8 +85,10 @@ export interface Memo {
   location?: string
   notes?: string
   completed: boolean
-  createdAt: number
   completedAt?: number
+  createdAt: number
+  pinned?: boolean  // 置顶功能
+  order?: number    // 排序权重
 }
 
 export interface Category {
@@ -102,13 +104,24 @@ export interface Shortcuts {
   newMemo: string        // 新建备忘录
 }
 
+// 贴边隐藏设置
+export interface EdgeHideSettings {
+  enabled: boolean
+  directions: ('left' | 'right' | 'top' | 'bottom')[]  // 启用哪些方向
+  threshold: number    // 灵敏度：3-15px
+  hideDelay: number    // 隐藏延迟：500-1500ms
+}
+
 export interface AppSettings {
   autoStart: boolean
   windowBounds: { x: number; y: number; width: number; height: number }
   opacity: number
   alwaysOnTop: boolean
   edgeHide: boolean
+  edgeHideSettings?: EdgeHideSettings  // 贴边隐藏详细设置
   shortcuts: Shortcuts
   displayMode: DisplayMode
   theme: ThemeName
+  darkMode?: boolean      // 深色模式
+  notificationSound?: boolean  // 通知声音
 }

@@ -89,6 +89,15 @@ export function deleteCategory(id: string): void {
   store.set('categories', categories)
 }
 
+export function updateCategory(id: string, updates: Partial<Category>): Category | null {
+  const categories = getCategories()
+  const index = categories.findIndex(c => c.id === id)
+  if (index === -1) return null
+  categories[index] = { ...categories[index], ...updates }
+  store.set('categories', categories)
+  return categories[index]
+}
+
 // ============ Settings ============
 export function getSettings(): AppSettings {
   return store.get('settings', DEFAULT_SETTINGS)

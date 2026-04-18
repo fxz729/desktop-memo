@@ -1,37 +1,58 @@
-/* ===========================
-   Design Tokens - 清新简约风
-   =========================== */
+/* ============================================
+   Neumorphism Design System - 暖色米色系
+   ============================================ */
+
 :root {
-  /* 背景色 */
-  --bg-primary: #F8FAFB;
-  --bg-card: rgba(255, 255, 255, 0.72);
-  --bg-hover: #F1F5F9;
-  --bg-modal: rgba(248, 250, 251, 0.96);
+  /* --- 基础色 (新拟态统一背景) --- */
+  --neu-bg: #F5F0E8;           /* 米白色 - 新拟态主背景 */
+  --neu-bg-dark: #E8E0D5;       /* 深米色 - 凹陷区域背景 */
+  --neu-bg-light: #FDFBF7;      /* 象牙白 - 高光区域 */
 
-  /* 文字色 */
-  --text-primary: #1E293B;
-  --text-secondary: #64748B;
-  --text-muted: #94A3B8;
+  /* --- 阴影色 (新拟态关键) --- */
+  --neu-shadow-dark: #D4C8B8;  /* 暖灰阴影 - 深色阴影方向 */
+  --neu-shadow-light: #FFFFFF;  /* 纯白 - 浅色阴影方向 */
 
-  /* 主强调色：翡翠绿 */
-  --accent: #10B981;
-  --accent-hover: #059669;
-  --accent-soft: #D1FAE5;
+  /* --- 强调色 (柔和暖色) --- */
+  --neu-accent: #D4A574;        /* 琥珀色 - 主强调色 */
+  --neu-accent-hover: #C4956A;  /* 深琥珀 */
+  --neu-accent-soft: #E8D5C4;   /* 淡琥珀色 */
 
-  /* 边框 */
-  --border: rgba(226, 232, 240, 0.8);
-  --border-focus: #10B981;
+  /* --- 文字色 --- */
+  --neu-text-primary: #5D4E37;   /* 深棕色 - 主文字 */
+  --neu-text-secondary: #8B7355; /* 中棕色 - 次要文字 */
+  --neu-text-muted: #A69580;     /* 浅棕色 - 辅助文字 */
 
-  /* 阴影（轻柔无沉重感） */
-  --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
-  --shadow-hover: 0 2px 6px rgba(0,0,0,0.05), 0 8px 24px rgba(0,0,0,0.06);
-  --shadow-modal: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+  /* --- 分类色彩 (保持柔和) --- */
+  --neu-cat-work: #7BA3C9;       /* 雾霾蓝 */
+  --neu-cat-work-soft: #E0EBF4;
+  --neu-cat-life: #8FBC8F;       /* 淡绿色 */
+  --neu-cat-life-soft: #E5F0E5;
+  --neu-cat-health: #E6C87A;     /* 淡金色 */
+  --neu-cat-health-soft: #F5EDD5;
+  --neu-cat-custom: #B8A9C9;     /* 淡紫色 */
+  --neu-cat-custom-soft: #EDE8F5;
+  --neu-cat-done: #B5B5B5;       /* 中性灰 */
+  --neu-cat-done-soft: #EBEBEB;
+
+  /* --- 新拟态阴影系统 --- */
+  /* 凸起效果 (Raised) */
+  --neu-shadow-raised: 6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light);
+  --neu-shadow-raised-lg: 8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light);
+  --neu-shadow-raised-sm: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
+
+  /* 凹陷效果 (Inset) */
+  --neu-shadow-inset: inset 6px 6px 12px var(--neu-shadow-dark), inset -6px -6px 12px var(--neu-shadow-light);
+  --neu-shadow-inset-lg: inset 8px 8px 16px var(--neu-shadow-dark), inset -8px -8px 16px var(--neu-shadow-light);
+  --neu-shadow-inset-sm: inset 3px 3px 6px var(--neu-shadow-dark), inset -3px -3px 6px var(--neu-shadow-light);
+
+  /* 扁平效果 (Flat) */
+  --neu-shadow-flat: 2px 2px 4px var(--neu-shadow-dark), -2px -2px 4px var(--neu-shadow-light);
 
   /* 圆角 */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
   --radius-full: 9999px;
 
   /* 间距 */
@@ -48,116 +69,86 @@
   line-height: 1.5;
 }
 
-/* ===========================
-   Theme: Aurora (极光蓝)
-   =========================== */
+/* ============================================
+   Theme: Aurora (极光蓝变体)
+   ============================================ */
 [data-theme="aurora"] {
-  --bg-primary: #F0F9FF;
-  --bg-card: rgba(255, 255, 255, 0.75);
-  --bg-hover: #E0F2FE;
-  --bg-modal: rgba(240, 249, 255, 0.96);
-
-  --text-primary: #0C4A6E;
-  --text-secondary: #0369A1;
-  --text-muted: #7DD3FC;
-
-  --accent: #0EA5E9;
-  --accent-hover: #0284C7;
-  --accent-soft: #E0F2FE;
-
-  --border: rgba(186, 230, 253, 0.7);
-  --border-focus: #0EA5E9;
-
-  --shadow-card: 0 1px 3px rgba(14, 165, 233, 0.08), 0 4px 12px rgba(14, 165, 233, 0.06);
-  --shadow-hover: 0 2px 6px rgba(14, 165, 233, 0.1), 0 8px 24px rgba(14, 165, 233, 0.08);
-  --shadow-modal: 0 4px 16px rgba(14, 165, 233, 0.12), 0 1px 4px rgba(14, 165, 233, 0.06);
+  --neu-bg: #FAF8F5;
+  --neu-bg-dark: #EDE8E0;
+  --neu-bg-light: #FFFFFF;
+  --neu-shadow-dark: #E0D8CC;
+  --neu-shadow-light: #FFFFFF;
+  --neu-accent: #7BA3C9;
+  --neu-accent-hover: #6B93B9;
+  --neu-accent-soft: #D9E6F2;
+  --neu-text-primary: #4A5568;
+  --neu-text-secondary: #718096;
+  --neu-text-muted: #A0AEC0;
 }
 
-/* ===========================
-   Theme: Twilight (暮光紫)
-   =========================== */
+/* ============================================
+   Theme: Twilight (暮光橙变体)
+   ============================================ */
 [data-theme="twilight"] {
-  --bg-primary: #FAF5FF;
-  --bg-card: rgba(255, 255, 255, 0.72);
-  --bg-hover: #F3E8FF;
-  --bg-modal: rgba(250, 245, 255, 0.96);
-
-  --text-primary: #581C87;
-  --text-secondary: #7E22CE;
-  --text-muted: #C084FC;
-
-  --accent: #A855F7;
-  --accent-hover: #9333EA;
-  --accent-soft: #F3E8FF;
-
-  --border: rgba(233, 213, 255, 0.8);
-  --border-focus: #A855F7;
-
-  --shadow-card: 0 1px 3px rgba(168, 85, 247, 0.08), 0 4px 12px rgba(168, 85, 247, 0.06);
-  --shadow-hover: 0 2px 6px rgba(168, 85, 247, 0.1), 0 8px 24px rgba(168, 85, 247, 0.08);
-  --shadow-modal: 0 4px 16px rgba(168, 85, 247, 0.12), 0 1px 4px rgba(168, 85, 247, 0.06);
+  --neu-bg: #F8F5F0;
+  --neu-bg-dark: #E5DDD5;
+  --neu-bg-light: #FFFCF8;
+  --neu-shadow-dark: #D0C5B8;
+  --neu-shadow-light: #FFFFFF;
+  --neu-accent: #E8A87C;
+  --neu-accent-hover: #D89868;
+  --neu-accent-soft: #F5E5D8;
+  --neu-text-primary: #5D4E37;
+  --neu-text-secondary: #8B7355;
+  --neu-text-muted: #A69580;
 }
 
-/* ===========================
-   Theme: Rose (玫瑰粉)
-   =========================== */
+/* ============================================
+   Theme: Rose (玫瑰粉变体)
+   ============================================ */
 [data-theme="rose"] {
-  --bg-primary: #FFF1F2;
-  --bg-card: rgba(255, 255, 255, 0.72);
-  --bg-hover: #FFE4E6;
-  --bg-modal: rgba(255, 241, 242, 0.96);
-
-  --text-primary: #881337;
-  --text-secondary: #BE123C;
-  --text-muted: #FDA4AF;
-
-  --accent: #F43F5E;
-  --accent-hover: #E11D48;
-  --accent-soft: #FFE4E6;
-
-  --border: rgba(254, 205, 211, 0.8);
-  --border-focus: #F43F5E;
-
-  --shadow-card: 0 1px 3px rgba(244, 63, 94, 0.06), 0 4px 12px rgba(244, 63, 94, 0.04);
-  --shadow-hover: 0 2px 6px rgba(244, 63, 94, 0.08), 0 8px 24px rgba(244, 63, 94, 0.06);
-  --shadow-modal: 0 4px 16px rgba(244, 63, 94, 0.1), 0 1px 4px rgba(244, 63, 94, 0.04);
+  --neu-bg: #FDF8F6;
+  --neu-bg-dark: #F0E8E3;
+  --neu-bg-light: #FFFDFB;
+  --neu-shadow-dark: #E0D5CC;
+  --neu-shadow-light: #FFFFFF;
+  --neu-accent: #D4A5A5;
+  --neu-accent-hover: #C49595;
+  --neu-accent-soft: #F5E5E5;
+  --neu-text-primary: #5D4E4E;
+  --neu-text-secondary: #8B7373;
+  --neu-text-muted: #A69595;
 }
 
-/* ===========================
-   Theme: Midnight (深夜黑)
-   =========================== */
+/* ============================================
+   Theme: Midnight (深夜灰变体 - 新拟态暗色)
+   ============================================ */
 [data-theme="midnight"] {
-  --bg-primary: #0F172A;
-  --bg-card: rgba(30, 41, 59, 0.85);
-  --bg-hover: #1E293B;
-  --bg-modal: rgba(15, 23, 42, 0.96);
+  --neu-bg: #3D3A36;
+  --neu-bg-dark: #2D2A26;
+  --neu-bg-light: #4D4A46;
+  --neu-shadow-dark: #1D1A16;
+  --neu-shadow-light: #5D5A56;
+  --neu-accent: #8BAEC4;
+  --neu-accent-hover: #7B9EB4;
+  --neu-accent-soft: #4A5A6A;
+  --neu-text-primary: #E8E4DF;
+  --neu-text-secondary: #B5AFA7;
+  --neu-text-muted: #857D73;
 
-  --text-primary: #F1F5F9;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
-
-  --accent: #38BDF8;
-  --accent-hover: #0EA5E9;
-  --accent-soft: rgba(56, 189, 248, 0.15);
-
-  --border: rgba(71, 85, 105, 0.6);
-  --border-focus: #38BDF8;
-
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.25);
-  --shadow-hover: 0 2px 6px rgba(0, 0, 0, 0.35), 0 8px 24px rgba(0, 0, 0, 0.3);
-  --shadow-modal: 0 4px 16px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0, 0, 0, 0.3);
+  /* Midnight 专用阴影 */
+  --neu-shadow-raised: 6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light);
+  --neu-shadow-raised-lg: 8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light);
+  --neu-shadow-raised-sm: 3px 3px 6px var(--neu-shadow-dark), -3px -3px 6px var(--neu-shadow-light);
+  --neu-shadow-inset: inset 6px 6px 12px var(--neu-shadow-dark), inset -6px -6px 12px var(--neu-shadow-light);
+  --neu-shadow-inset-lg: inset 8px 8px 16px var(--neu-shadow-dark), inset -8px -8px 16px var(--neu-shadow-light);
+  --neu-shadow-inset-sm: inset 3px 3px 6px var(--neu-shadow-dark), inset -3px -3px 6px var(--neu-shadow-light);
+  --neu-shadow-flat: 2px 2px 4px var(--neu-shadow-dark), -2px -2px 4px var(--neu-shadow-light);
 }
 
-/* 非Win11 fallback for dark theme */
-@supports not (backdrop-filter: blur(1px)) {
-  [data-theme="midnight"] .widget-root {
-    background: rgba(30, 41, 59, 0.95);
-  }
-}
-
-/* ===========================
+/* ============================================
    Reset & Base
-   =========================== */
+   ============================================ */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -176,67 +167,55 @@ body {
   user-select: none;
 }
 
-/* ===========================
-   Widget Container (毛玻璃)
-   =========================== */
+/* ============================================
+   Widget Container (新拟态主容器)
+   ============================================ */
 .widget-root {
-  background: var(--bg-card);
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: var(--neu-bg);
+  border: none;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--neu-shadow-raised-lg);
   height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  color: var(--text-primary);
+  color: var(--neu-text-primary);
+  transition: box-shadow 0.2s ease;
 }
 
 /* 贴边隐藏时移除圆角 */
 body[data-edge-hide="left"] .widget-root,
 body[data-edge-hide="right"] .widget-root {
   border-radius: 0;
-  border-left: none;
-  border-right: none;
 }
 
 body[data-edge-hide="top"] .widget-root,
 body[data-edge-hide="bottom"] .widget-root {
   border-radius: 0;
-  border-top: none;
-  border-bottom: none;
 }
 
 body[data-edge-hide] .widget-root {
   border-radius: 0;
 }
 
-/* 非Win11 fallback */
-@supports not (backdrop-filter: blur(1px)) {
-  .widget-root {
-    background: rgba(248, 250, 251, 0.96);
-    border-color: var(--border);
-  }
-}
-
-/* ===========================
-   Title Bar (拖拽区域)
-   =========================== */
+/* ============================================
+   Title Bar (新拟态标题栏)
+   ============================================ */
 .title-bar {
   -webkit-app-region: drag;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--border);
+  background: var(--neu-bg);
+  box-shadow: 0 2px 4px var(--neu-shadow-dark);
   flex-shrink: 0;
 }
 
 .title-bar-title {
   font-size: 14px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--neu-text-primary);
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -253,34 +232,43 @@ body[data-edge-hide] .widget-root {
   width: 28px;
   height: 28px;
   border: none;
-  background: transparent;
+  background: var(--neu-bg);
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: var(--text-secondary);
-  transition: all 0.18s ease;
+  color: var(--neu-text-secondary);
+  box-shadow: var(--neu-shadow-raised-sm);
+  transition: all 0.2s ease;
 }
 
 .title-bar-btn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
+  box-shadow: var(--neu-shadow-flat);
+  color: var(--neu-text-primary);
+}
+
+.title-bar-btn:active {
+  box-shadow: var(--neu-shadow-inset-sm);
 }
 
 .title-bar-btn.close:hover {
-  background: #FEE2E2;
-  color: #EF4444;
+  background: #F5E6E0;
+  color: #C45C4A;
+  box-shadow: var(--neu-shadow-flat);
 }
 
-/* ===========================
-   Category Tabs
-   =========================== */
+/* ============================================
+   Category Tabs (新拟态分类标签)
+   ============================================ */
 .category-tabs {
   display: flex;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--border);
+  background: var(--neu-bg-dark);
+  box-shadow: var(--neu-shadow-inset-sm);
+  border-radius: var(--radius-md);
+  margin: var(--space-3);
   flex-shrink: 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -294,52 +282,54 @@ body[data-edge-hide] .widget-root {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 5px 12px;
+  padding: 6px 14px;
   border-radius: var(--radius-full);
-  border: 1px solid transparent;
+  border: none;
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: all 0.2s ease;
   white-space: nowrap;
-  background: transparent;
-  color: var(--text-secondary);
+  background: var(--neu-bg);
+  color: var(--neu-text-secondary);
+  box-shadow: var(--neu-shadow-raised-sm);
 }
 
 .cat-tab:hover {
-  background: var(--bg-hover);
+  box-shadow: var(--neu-shadow-flat);
+  color: var(--neu-text-primary);
+}
+
+.cat-tab:active {
+  box-shadow: var(--neu-shadow-inset-sm);
 }
 
 .cat-tab.active {
+  box-shadow: var(--neu-shadow-inset-sm);
+  color: var(--cat, var(--neu-accent));
   font-weight: 600;
 }
 
 /* 分类色彩 */
-.cat-work   { --cat: #3B82F6; --cat-soft: #DBEAFE; --cat-text: #1D4ED8; }
-.cat-life   { --cat: #10B981; --cat-soft: #D1FAE5; --cat-text: #047857; }
-.cat-health { --cat: #F59E0B; --cat-soft: #FEF3C7; --cat-text: #B45309; }
-.cat-custom { --cat: #8B5CF6; --cat-soft: #EDE9FE; --cat-text: #6D28D9; }
-.cat-done   { --cat: #94A3B8; --cat-soft: #F1F5F9; --cat-text: #64748B; }
+.cat-work   { --cat: var(--neu-cat-work); --cat-soft: var(--neu-cat-work-soft); }
+.cat-life   { --cat: var(--neu-cat-life); --cat-soft: var(--neu-cat-life-soft); }
+.cat-health { --cat: var(--neu-cat-health); --cat-soft: var(--neu-cat-health-soft); }
+.cat-custom { --cat: var(--neu-cat-custom); --cat-soft: var(--neu-cat-custom-soft); }
+.cat-done   { --cat: var(--neu-cat-done); --cat-soft: var(--neu-cat-done-soft); }
 
-.cat-tab.active {
-  background: var(--cat-soft);
-  color: var(--cat-text);
-  border-color: var(--cat);
-}
-
-/* ===========================
-   Memo List
-   =========================== */
+/* ============================================
+   Memo List (新拟态列表容器 - 凹陷效果)
+   ============================================ */
 .memo-list {
   flex: 1;
   overflow-y: auto;
   padding: var(--space-3) var(--space-4);
   scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
+  scrollbar-color: var(--neu-shadow-dark) transparent;
 }
 
 .memo-list::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 
 .memo-list::-webkit-scrollbar-track {
@@ -347,63 +337,212 @@ body[data-edge-hide] .widget-root {
 }
 
 .memo-list::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: var(--neu-shadow-dark);
   border-radius: var(--radius-full);
 }
 
-/* ===========================
-   Memo Item
-   =========================== */
+/* ============================================
+   Search Bar (新拟态搜索框 - 凹陷效果)
+   ============================================ */
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--space-3);
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--neu-text-muted);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 36px;
+  border: none;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-family: 'Nunito', sans-serif;
+  color: var(--neu-text-primary);
+  background: var(--neu-bg-dark);
+  box-shadow: var(--neu-shadow-inset-sm);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  box-shadow: var(--neu-shadow-inset-sm), 0 0 0 2px var(--neu-accent-soft);
+}
+
+.search-input::placeholder {
+  color: var(--neu-text-muted);
+}
+
+.search-clear {
+  position: absolute;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: var(--neu-bg);
+  box-shadow: var(--neu-shadow-raised-sm);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--neu-text-secondary);
+  transition: all 0.15s ease;
+}
+
+.search-clear:hover {
+  box-shadow: var(--neu-shadow-flat);
+  color: var(--neu-text-primary);
+}
+
+.search-clear:active {
+  box-shadow: var(--neu-shadow-inset-sm);
+}
+
+/* ============================================
+   Memo Item (新拟态备忘录卡片)
+   ============================================ */
 .memo-item {
+  position: relative;
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
   padding: var(--space-3);
   border-radius: var(--radius-md);
   margin-bottom: var(--space-2);
-  background: white;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-card);
+  background: var(--neu-bg);
+  border: none;
+  box-shadow: var(--neu-shadow-raised);
   cursor: default;
-  transition: box-shadow 0.18s ease, border-color 0.18s ease;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
+/* 悬停时的增强阴影 */
 .memo-item:hover {
-  box-shadow: var(--shadow-hover);
-  border-color: rgba(16, 185, 129, 0.2);
+  box-shadow: var(--neu-shadow-raised-lg);
+  transform: translateY(-2px);
+}
+
+/* 按压时的凹陷效果 */
+.memo-item:active {
+  box-shadow: var(--neu-shadow-inset);
+  transform: translateY(0);
+}
+
+/* 拖拽占位符 */
+.memo-item.drag-over {
+  box-shadow: var(--neu-shadow-inset);
+}
+
+/* 置顶卡片 - 新拟态凸起 + 强调色 */
+.memo-item.pinned {
+  border: none;
+  background: var(--neu-bg);
+  box-shadow:
+    var(--neu-shadow-raised),
+    0 0 20px var(--neu-accent-soft);
+}
+
+.memo-item.pinned::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 4px;
+  background: var(--neu-accent);
+  border-radius: 2px;
+  box-shadow: var(--neu-shadow-inset-sm);
+}
+
+.memo-item.pinned .memo-title::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--neu-accent);
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+  box-shadow: 0 0 8px var(--neu-accent);
+}
+
+/* 拖拽中的置顶卡片 */
+.memo-item.dragging {
+  transform: scale(1.03);
+  box-shadow: var(--neu-shadow-raised-lg), 0 0 40px var(--neu-accent-soft);
+  z-index: 100;
+}
+
+/* 拖拽手柄 */
+.memo-drag-handle {
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  color: var(--neu-text-muted);
+  display: flex;
+  align-items: center;
+  padding: 2px;
+}
+
+.memo-item:hover .memo-drag-handle {
+  opacity: 1;
+}
+
+.memo-drag-handle:active {
+  cursor: grabbing;
 }
 
 .memo-item.completed .memo-title {
   text-decoration: line-through;
-  opacity: 0.45;
+  opacity: 0.5;
+  color: var(--neu-text-muted);
 }
 
+/* ============================================
+   Checkbox (新拟态复选框 - 凹陷/凸起)
+   ============================================ */
 .memo-checkbox {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  border: 2px solid var(--border);
+  border: none;
+  background: var(--neu-bg);
+  box-shadow: var(--neu-shadow-inset-sm);
   cursor: pointer;
   flex-shrink: 0;
   margin-top: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.18s ease;
-  background: transparent;
+  transition: all 0.2s ease;
 }
 
 .memo-checkbox:hover {
-  border-color: var(--accent);
+  box-shadow: var(--neu-shadow-flat);
 }
 
+.memo-checkbox:active {
+  box-shadow: var(--neu-shadow-inset);
+}
+
+/* 选中状态 - 凸起 + 强调色 */
 .memo-checkbox.checked {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--neu-accent);
+  box-shadow: var(--neu-shadow-raised-sm);
 }
 
 .memo-checkbox.checked svg {
   color: white;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
 }
 
 .memo-body {
@@ -414,7 +553,7 @@ body[data-edge-hide] .widget-root {
 .memo-title {
   font-size: 13px;
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--neu-text-primary);
   margin-bottom: 2px;
   word-break: break-word;
 }
@@ -431,18 +570,20 @@ body[data-edge-hide] .widget-root {
   align-items: center;
   gap: 3px;
   font-size: 11px;
-  color: var(--text-secondary);
-  background: var(--bg-hover);
-  padding: 2px 6px;
+  color: var(--neu-text-secondary);
+  background: var(--neu-bg-dark);
+  padding: 3px 8px;
   border-radius: var(--radius-full);
+  box-shadow: var(--neu-shadow-inset-sm);
 }
 
 .memo-tag.cat-dot {
   background: var(--cat-soft);
-  color: var(--cat-text);
+  color: var(--cat, var(--neu-text-secondary));
   font-size: 10px;
-  padding: 2px 8px;
+  padding: 3px 10px;
   font-weight: 500;
+  box-shadow: none;
 }
 
 .memo-actions {
@@ -460,29 +601,35 @@ body[data-edge-hide] .widget-root {
   width: 24px;
   height: 24px;
   border: none;
-  background: transparent;
+  background: var(--neu-bg);
   border-radius: var(--radius-sm);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
+  color: var(--neu-text-muted);
+  box-shadow: var(--neu-shadow-raised-sm);
   transition: all 0.18s ease;
 }
 
 .memo-action-btn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
+  box-shadow: var(--neu-shadow-flat);
+  color: var(--neu-text-primary);
+}
+
+.memo-action-btn:active {
+  box-shadow: var(--neu-shadow-inset-sm);
 }
 
 .memo-action-btn.delete:hover {
-  background: #FEE2E2;
-  color: #EF4444;
+  background: #F5E6E0;
+  color: #C45C4A;
+  box-shadow: var(--neu-shadow-flat);
 }
 
-/* ===========================
+/* ============================================
    Empty State
-   =========================== */
+   ============================================ */
 .memo-empty {
   display: flex;
   flex-direction: column;
@@ -490,7 +637,7 @@ body[data-edge-hide] .widget-root {
   justify-content: center;
   height: 100%;
   gap: var(--space-3);
-  color: var(--text-muted);
+  color: var(--neu-text-muted);
 }
 
 .memo-empty-icon {
@@ -503,40 +650,45 @@ body[data-edge-hide] .widget-root {
   text-align: center;
 }
 
-/* ===========================
-   Add Memo Button (FAB)
-   =========================== */
+/* ============================================
+   Add Memo Button (新拟态 FAB 按钮)
+   ============================================ */
 .add-btn {
   position: absolute;
   bottom: var(--space-4);
   right: var(--space-4);
-  width: 44px;
-  height: 44px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  background: var(--accent);
-  color: white;
+  background: var(--neu-bg);
+  color: var(--neu-accent);
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
-  transition: all 0.18s ease;
+  box-shadow: var(--neu-shadow-raised);
+  transition: all 0.2s ease;
 }
 
 .add-btn:hover {
-  background: var(--accent-hover);
-  transform: scale(1.06);
-  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+  box-shadow: var(--neu-shadow-raised-lg);
+  transform: scale(1.05);
+  color: var(--neu-accent-hover);
 }
 
-/* ===========================
-   Modal (新增/编辑)
-   =========================== */
+.add-btn:active {
+  box-shadow: var(--neu-shadow-inset);
+  transform: scale(0.98);
+}
+
+/* ============================================
+   Modal (新拟态弹窗)
+   ============================================ */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.35);
+  background: rgba(93, 78, 55, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -545,17 +697,18 @@ body[data-edge-hide] .widget-root {
 }
 
 .modal {
-  background: white;
+  background: var(--neu-bg);
   border-radius: var(--radius-xl);
   padding: var(--space-6);
   width: 300px;
-  box-shadow: var(--shadow-modal);
+  box-shadow: var(--neu-shadow-raised-lg);
+  border: none;
 }
 
 .modal-title {
   font-size: 16px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--neu-text-primary);
   margin-bottom: var(--space-5);
 }
 
@@ -567,7 +720,7 @@ body[data-edge-hide] .widget-root {
   display: block;
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--neu-text-secondary);
   margin-bottom: var(--space-2);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -575,23 +728,24 @@ body[data-edge-hide] .widget-root {
 
 .form-input {
   width: 100%;
-  padding: var(--space-2) var(--space-3);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  border: none;
+  border-radius: var(--radius-md);
   font-size: 13px;
   font-family: 'Nunito', sans-serif;
-  color: var(--text-primary);
-  background: white;
-  transition: border-color 0.18s ease;
+  color: var(--neu-text-primary);
+  background: var(--neu-bg-dark);
+  box-shadow: var(--neu-shadow-inset-sm);
+  transition: box-shadow 0.2s ease;
   outline: none;
 }
 
 .form-input:focus {
-  border-color: var(--border-focus);
+  box-shadow: var(--neu-shadow-inset-sm), 0 0 0 2px var(--neu-accent-soft);
 }
 
 .form-input::placeholder {
-  color: var(--text-muted);
+  color: var(--neu-text-muted);
 }
 
 .form-textarea {
@@ -613,32 +767,44 @@ body[data-edge-hide] .widget-root {
 
 .btn {
   flex: 1;
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
   font-size: 13px;
   font-weight: 600;
   font-family: 'Nunito', sans-serif;
   cursor: pointer;
-  transition: all 0.18s ease;
+  transition: all 0.2s ease;
   border: none;
 }
 
 .btn-cancel {
-  background: var(--bg-hover);
-  color: var(--text-secondary);
+  background: var(--neu-bg);
+  color: var(--neu-text-secondary);
+  box-shadow: var(--neu-shadow-raised-sm);
 }
 
 .btn-cancel:hover {
-  background: var(--border);
+  box-shadow: var(--neu-shadow-flat);
+  color: var(--neu-text-primary);
+}
+
+.btn-cancel:active {
+  box-shadow: var(--neu-shadow-inset-sm);
 }
 
 .btn-primary {
-  background: var(--accent);
+  background: var(--neu-accent);
   color: white;
+  box-shadow: var(--neu-shadow-raised-sm);
 }
 
 .btn-primary:hover {
-  background: var(--accent-hover);
+  background: var(--neu-accent-hover);
+  box-shadow: var(--neu-shadow-raised);
+}
+
+.btn-primary:active {
+  box-shadow: var(--neu-shadow-inset-sm);
 }
 
 .btn-primary:disabled {
@@ -646,17 +812,17 @@ body[data-edge-hide] .widget-root {
   cursor: not-allowed;
 }
 
-/* ===========================
-   Settings Panel
-   =========================== */
+/* ============================================
+   Settings Panel (新拟态设置面板)
+   ============================================ */
 .settings-panel {
   position: fixed;
   top: 0;
   right: 0;
   height: 100%;
   width: 280px;
-  background: white;
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
+  background: var(--neu-bg);
+  box-shadow: -8px 0 24px var(--neu-shadow-dark), 8px 0 24px var(--neu-shadow-light);
   z-index: 200;
   display: flex;
   flex-direction: column;
@@ -668,13 +834,14 @@ body[data-edge-hide] .widget-root {
   align-items: center;
   justify-content: space-between;
   padding: var(--space-4) var(--space-5);
-  border-bottom: 1px solid var(--border);
+  background: var(--neu-bg);
+  box-shadow: 0 2px 4px var(--neu-shadow-dark);
 }
 
 .settings-title {
   font-size: 15px;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--neu-text-primary);
 }
 
 .settings-body {
@@ -684,13 +851,17 @@ body[data-edge-hide] .widget-root {
 }
 
 .setting-item {
-  margin-bottom: var(--space-6);
+  background: var(--neu-bg);
+  box-shadow: var(--neu-shadow-raised-sm);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
 }
 
 .setting-label {
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--neu-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: var(--space-3);
@@ -705,26 +876,37 @@ body[data-edge-hide] .widget-root {
 .slider {
   flex: 1;
   -webkit-appearance: none;
-  height: 4px;
-  background: var(--border);
+  height: 6px;
+  background: var(--neu-bg-dark);
   border-radius: var(--radius-full);
+  box-shadow: var(--neu-shadow-inset-sm);
   outline: none;
 }
 
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  background: var(--accent);
+  width: 20px;
+  height: 20px;
+  background: var(--neu-bg);
+  border: none;
   border-radius: 50%;
+  box-shadow: var(--neu-shadow-raised-sm);
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+  transition: box-shadow 0.2s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  box-shadow: var(--neu-shadow-raised);
+}
+
+.slider::-webkit-slider-thumb:active {
+  box-shadow: var(--neu-shadow-inset-sm);
 }
 
 .slider-value {
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--neu-text-secondary);
   min-width: 32px;
   text-align: right;
 }
@@ -738,13 +920,13 @@ body[data-edge-hide] .widget-root {
 .toggle-label {
   font-size: 13px;
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--neu-text-primary);
 }
 
 .toggle {
   position: relative;
-  width: 40px;
-  height: 22px;
+  width: 44px;
+  height: 24px;
 }
 
 .toggle input {
@@ -757,54 +939,62 @@ body[data-edge-hide] .widget-root {
   position: absolute;
   cursor: pointer;
   inset: 0;
-  background: var(--border);
+  background: var(--neu-bg-dark);
   border-radius: var(--radius-full);
+  box-shadow: var(--neu-shadow-inset-sm);
   transition: 0.2s;
 }
 
 .toggle-slider::before {
   content: '';
   position: absolute;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   left: 3px;
   bottom: 3px;
-  background: white;
+  background: var(--neu-bg);
   border-radius: 50%;
   transition: 0.2s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  box-shadow: var(--neu-shadow-raised-sm);
 }
 
 .toggle input:checked + .toggle-slider {
-  background: var(--accent);
+  background: var(--neu-bg-dark);
+  box-shadow: var(--neu-shadow-inset-sm);
 }
 
 .toggle input:checked + .toggle-slider::before {
-  transform: translateX(18px);
+  background: var(--neu-accent);
+  transform: translateX(20px);
 }
 
 .btn-reset {
   width: 100%;
-  padding: var(--space-2) var(--space-4);
-  background: var(--bg-hover);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  background: var(--neu-bg);
+  border: none;
+  border-radius: var(--radius-md);
   font-size: 13px;
   font-weight: 500;
   font-family: 'Nunito', sans-serif;
-  color: var(--text-secondary);
+  color: var(--neu-text-secondary);
   cursor: pointer;
-  transition: all 0.18s ease;
+  box-shadow: var(--neu-shadow-raised-sm);
+  transition: all 0.2s ease;
 }
 
 .btn-reset:hover {
-  background: var(--border);
-  color: var(--text-primary);
+  box-shadow: var(--neu-shadow-flat);
+  color: var(--neu-text-primary);
 }
 
-/* ===========================
+.btn-reset:active {
+  box-shadow: var(--neu-shadow-inset-sm);
+}
+
+/* ============================================
    Shortcut Recorder
-   =========================== */
+   ============================================ */
 .shortcut-item {
   display: flex;
   align-items: center;
@@ -813,43 +1003,45 @@ body[data-edge-hide] .widget-root {
 
 .shortcut-label {
   font-size: 13px;
-  color: var(--text-secondary);
+  color: var(--neu-text-secondary);
 }
 
 .shortcut-recorder {
-  padding: 6px 12px;
-  background: var(--bg-hover);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  background: var(--neu-bg);
+  border: none;
+  border-radius: var(--radius-md);
   font-size: 12px;
   font-family: 'Nunito', sans-serif;
-  color: var(--text-primary);
+  color: var(--neu-text-primary);
   cursor: pointer;
-  transition: all 0.18s ease;
+  box-shadow: var(--neu-shadow-raised-sm);
+  transition: all 0.2s ease;
   min-width: 100px;
   text-align: center;
 }
 
 .shortcut-recorder:hover {
-  border-color: var(--accent);
-  background: var(--accent-soft);
+  box-shadow: var(--neu-shadow-flat);
+}
+
+.shortcut-recorder:active {
+  box-shadow: var(--neu-shadow-inset-sm);
 }
 
 .shortcut-recorder.recording {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--accent);
-  animation: pulse 1s infinite;
+  color: var(--neu-accent);
+  animation: neu-pulse 1s infinite;
 }
 
-@keyframes pulse {
+@keyframes neu-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
 }
 
-/* ===========================
-   Compact Mode (纯净模式)
-   =========================== */
+/* ============================================
+   Compact Mode (新拟态紧凑模式)
+   ============================================ */
 .widget-root.compact {
   border-radius: var(--radius-md);
 }
@@ -864,10 +1056,11 @@ body[data-edge-hide] .widget-root {
 
 .widget-root.compact .category-tabs {
   padding: var(--space-2) var(--space-3);
+  margin: var(--space-2);
 }
 
 .widget-root.compact .category-tabs .cat-tab {
-  padding: 3px 8px;
+  padding: 4px 10px;
   font-size: 11px;
 }
 
@@ -882,36 +1075,47 @@ body[data-edge-hide] .widget-root {
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) 0;
-  border-bottom: 1px solid var(--border);
+  border-bottom: none;
+  margin-bottom: var(--space-2);
+  background: var(--neu-bg);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  box-shadow: var(--neu-shadow-raised-sm);
 }
 
 .compact-item:last-child {
   border-bottom: none;
+  margin-bottom: 0;
 }
 
 .compact-check {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  border: 1.5px solid var(--border);
-  background: transparent;
+  border: none;
+  background: var(--neu-bg);
+  box-shadow: var(--neu-shadow-inset-sm);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   color: transparent;
   flex-shrink: 0;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .compact-check:hover {
-  border-color: var(--accent);
-  background: var(--accent-soft);
+  box-shadow: var(--neu-shadow-flat);
 }
 
 .compact-check:active {
-  background: var(--accent);
-  border-color: var(--accent);
+  box-shadow: var(--neu-shadow-inset-sm);
+}
+
+.compact-check:active,
+.compact-check.checked {
+  background: var(--neu-accent);
+  box-shadow: var(--neu-shadow-raised-sm);
   color: white;
 }
 
@@ -923,7 +1127,7 @@ body[data-edge-hide] .widget-root {
 .compact-title {
   font-size: 13px;
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--neu-text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -940,7 +1144,7 @@ body[data-edge-hide] .widget-root {
   align-items: center;
   gap: 2px;
   font-size: 10px;
-  color: var(--text-muted);
+  color: var(--neu-text-muted);
 }
 
 .compact-empty {
@@ -948,7 +1152,7 @@ body[data-edge-hide] .widget-root {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
+  color: var(--neu-text-muted);
   font-size: 12px;
 }
 
@@ -956,12 +1160,12 @@ body[data-edge-hide] .widget-root {
   text-align: center;
   padding: var(--space-2);
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--neu-text-muted);
 }
 
-/* ===========================
-   Mini Mode List
-   =========================== */
+/* ============================================
+   Mini Mode (新拟态迷你模式)
+   ============================================ */
 .mini-list {
   flex: 1;
   overflow-y: auto;
@@ -972,43 +1176,52 @@ body[data-edge-hide] .widget-root {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 10px;
+  padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
-  transition: background 0.15s ease;
+  background: var(--neu-bg);
+  box-shadow: var(--neu-shadow-raised-sm);
+  margin-bottom: var(--space-2);
+  transition: all 0.2s ease;
 }
 
 .mini-item:hover {
-  background: var(--bg-hover);
+  box-shadow: var(--neu-shadow-raised);
+}
+
+.mini-item:active {
+  box-shadow: var(--neu-shadow-inset-sm);
 }
 
 .mini-check {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 1.5px solid var(--border);
-  background: transparent;
+  border: none;
+  background: var(--neu-bg);
+  box-shadow: var(--neu-shadow-inset-sm);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
   color: transparent;
 }
 
 .mini-check:hover {
-  border-color: var(--accent);
-  background: var(--accent-light);
-  color: var(--accent);
+  box-shadow: var(--neu-shadow-flat);
 }
 
-.mini-check:active {
-  transform: scale(0.92);
+.mini-check:active,
+.mini-check.checked {
+  background: var(--neu-accent);
+  box-shadow: var(--neu-shadow-raised-sm);
+  color: white;
 }
 
 .mini-title {
   font-size: 13px;
-  color: var(--text-primary);
+  color: var(--neu-text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1019,13 +1232,13 @@ body[data-edge-hide] .widget-root {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
+  color: var(--neu-text-muted);
   font-size: 12px;
 }
 
-/* ===========================
-   Ultra Mini Mode List
-   =========================== */
+/* ============================================
+   Ultra Mini Mode (新拟态极简模式)
+   ============================================ */
 .ultra-mini-list {
   flex: 1;
   overflow-y: auto;
@@ -1036,24 +1249,37 @@ body[data-edge-hide] .widget-root {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 8px;
-  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--neu-bg);
+  box-shadow: var(--neu-shadow-raised-sm);
+  margin-bottom: var(--space-2);
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .ultra-mini-item:hover {
-  background: var(--bg-hover);
+  box-shadow: var(--neu-shadow-raised);
+}
+
+.ultra-mini-item:active {
+  box-shadow: var(--neu-shadow-inset-sm);
 }
 
 .ultra-mini-check {
-  color: var(--text-muted);
+  color: var(--neu-text-muted);
   flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+
+.ultra-mini-item:active .ultra-mini-check,
+.ultra-mini-item.completed .ultra-mini-check {
+  color: var(--neu-accent);
 }
 
 .ultra-mini-title {
   font-size: 12px;
-  color: var(--text-primary);
+  color: var(--neu-text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1064,13 +1290,13 @@ body[data-edge-hide] .widget-root {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
+  color: var(--neu-text-muted);
   font-size: 11px;
 }
 
-/* ===========================
-   Category Selector
-   =========================== */
+/* ============================================
+   Category Selector (新拟态分类选择器)
+   ============================================ */
 .cat-selector {
   display: flex;
   flex-wrap: wrap;
@@ -1081,31 +1307,37 @@ body[data-edge-hide] .widget-root {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 5px 12px;
+  padding: 6px 14px;
   border-radius: var(--radius-full);
-  border: 1.5px solid transparent;
+  border: none;
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.18s ease;
-  background: transparent;
-  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  background: var(--neu-bg);
+  color: var(--neu-text-secondary);
+  box-shadow: var(--neu-shadow-raised-sm);
   font-family: 'Nunito', sans-serif;
 }
 
 .cat-option:hover {
-  background: var(--bg-hover);
+  box-shadow: var(--neu-shadow-flat);
+  color: var(--neu-text-primary);
+}
+
+.cat-option:active {
+  box-shadow: var(--neu-shadow-inset-sm);
 }
 
 .cat-option.selected {
-  border-color: var(--cat);
-  background: var(--cat-soft);
-  color: var(--cat-text);
+  box-shadow: var(--neu-shadow-inset-sm);
+  background: var(--cat-soft, var(--neu-accent-soft));
+  color: var(--cat, var(--neu-accent));
 }
 
-/* ===========================
-   Animations
-   =========================== */
+/* ============================================
+   Animations (新拟态动画)
+   ============================================ */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -1116,10 +1348,135 @@ body[data-edge-hide] .widget-root {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes neu-glow {
+  0%, 100% {
+    box-shadow: var(--neu-shadow-raised), 0 0 10px var(--neu-accent-soft);
+  }
+  50% {
+    box-shadow: var(--neu-shadow-raised), 0 0 20px var(--neu-accent-soft);
+  }
+}
+
+@keyframes neu-checkBounce {
+  0% { transform: scale(0.85); box-shadow: var(--neu-shadow-inset-sm); }
+  50% { transform: scale(1.1); box-shadow: var(--neu-shadow-raised-sm); }
+  100% { transform: scale(1); box-shadow: var(--neu-shadow-raised-sm); }
+}
+
+/* 完成勾选动画 */
+.memo-checkbox.checked {
+  animation: neu-checkBounce 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
 .animate-fade-in {
   animation: fadeIn 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .animate-slide-in {
   animation: slideIn 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* 置顶高亮动画 */
+.memo-item.pinned .memo-title::before {
+  animation: neu-glow 2s ease-in-out infinite;
+}
+
+/* 拖拽时的视觉反馈 */
+.memo-item[data-dragging="true"] {
+  cursor: grabbing;
+  transform: scale(1.03);
+  box-shadow: var(--neu-shadow-raised-lg), 0 0 30px var(--neu-accent-soft);
+}
+
+/* ============================================
+   Theme Buttons (新拟态主题选择按钮)
+   ============================================ */
+.theme-buttons {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: center;
+}
+
+.theme-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--neu-bg);
+  box-shadow: var(--neu-shadow-raised-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.theme-btn:hover {
+  box-shadow: var(--neu-shadow-flat);
+  transform: scale(1.1);
+}
+
+.theme-btn:active {
+  box-shadow: var(--neu-shadow-inset-sm);
+  transform: scale(0.95);
+}
+
+.theme-btn.active {
+  box-shadow: var(--neu-shadow-inset-sm);
+}
+
+.theme-btn.active::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* ============================================
+   Display Mode Buttons (新拟态显示模式按钮)
+   ============================================ */
+.display-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+}
+
+.display-mode-btn {
+  padding: var(--space-3);
+  border: none;
+  background: var(--neu-bg);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  box-shadow: var(--neu-shadow-raised-sm);
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.display-mode-btn:hover {
+  box-shadow: var(--neu-shadow-flat);
+}
+
+.display-mode-btn:active {
+  box-shadow: var(--neu-shadow-inset-sm);
+}
+
+.display-mode-btn.active {
+  box-shadow: var(--neu-shadow-inset-sm);
+  background: var(--neu-accent-soft);
+}
+
+.display-mode-btn .mode-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--neu-text-primary);
+  margin-bottom: 2px;
+}
+
+.display-mode-btn .mode-desc {
+  font-size: 10px;
+  color: var(--neu-text-muted);
 }

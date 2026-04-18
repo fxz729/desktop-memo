@@ -17,7 +17,7 @@ export default function MemoWidget() {
       {/* Title Bar */}
       <div className="title-bar">
         <div className="title-bar-title">
-          <GripHorizontal size={14} style={{ color: 'var(--text-muted)' }} />
+          <GripHorizontal size={14} style={{ color: 'var(--neu-text-muted)' }} />
           <span>{config.title}</span>
         </div>
         <div className="title-bar-buttons">

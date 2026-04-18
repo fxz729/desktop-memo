@@ -17,6 +17,8 @@ interface MemoStore {
     shortcuts: Shortcuts
     displayMode: DisplayMode
     theme: ThemeName
+    darkMode: boolean
+    notificationSound: boolean
   }
 
   // Actions
@@ -26,6 +28,7 @@ interface MemoStore {
   deleteMemo: (id: string) => Promise<void>
   completeMemo: (id: string) => Promise<void>
   addCategory: (category: Omit<Category, 'id'>) => Promise<void>
+  updateCategory: (id: string, updates: Partial<Category>) => Promise<void>
   deleteCategory: (id: string) => Promise<void>
   setActiveCategory: (id: string) => void
   openAddModal: (memo?: Memo) => void
@@ -52,7 +55,9 @@ export const useMemoStore = create<MemoStore>((set, get) => ({
       newMemo: 'CommandOrControl+N'
     },
     displayMode: 'standard',
-    theme: 'jade'
+    theme: 'jade',
+    darkMode: false,
+    notificationSound: true
   },
 
   loadAll: async () => {
@@ -121,6 +126,13 @@ export const useMemoStore = create<MemoStore>((set, get) => ({
     set(state => ({ categories: [...state.categories, category] }))
   },
 
+  updateCategory: async (id, updates) => {
+    await window.electronAPI.category.update(id, updates)
+    set(state => ({
+      categories: state.categories.map(c => c.id === id ? { ...c, ...updates } : c)
+    }))
+  },
+
   deleteCategory: async (id) => {
     await window.electronAPI.category.delete(id)
     set(state => ({ categories: state.categories.filter(c => c.id !== id) }))
@@ -148,7 +160,9 @@ export const useMemoStore = create<MemoStore>((set, get) => ({
       edgeHide: newSettings.edgeHide,
       shortcuts: newSettings.shortcuts,
       displayMode: newSettings.displayMode,
-      theme: newSettings.theme
+      theme: newSettings.theme,
+      darkMode: newSettings.darkMode,
+      notificationSound: newSettings.notificationSound
     })
   }
 }))

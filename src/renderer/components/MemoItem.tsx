@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, Variants } from 'framer-motion'
-import { Check, Trash2, MapPin, Clock } from 'lucide-react'
+import { Check, Trash2, MapPin, Clock, Pin } from 'lucide-react'
 import { useMemoStore } from '../store/useMemoStore'
 import { Memo, Category } from '../types'
 import { format } from 'date-fns'
@@ -13,22 +13,27 @@ interface Props {
 }
 
 export default function MemoItem({ memo, category, variants }: Props) {
-  const { completeMemo, deleteMemo, openAddModal } = useMemoStore()
+  const { completeMemo, deleteMemo, openAddModal, updateMemo } = useMemoStore()
   const [isCompleting, setIsCompleting] = useState(false)
 
   const handleComplete = async () => {
     if (isCompleting || memo.completed) return
     setIsCompleting(true)
 
-    // 动画延迟后再移动到已完成
+    // 弹性动画后再移动到已完成
     setTimeout(async () => {
       await completeMemo(memo.id)
       setIsCompleting(false)
-    }, 300)
+    }, 350)
   }
 
   const handleDelete = async () => {
     await deleteMemo(memo.id)
+  }
+
+  const handlePin = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    await updateMemo(memo.id, { pinned: !memo.pinned })
   }
 
   const formatReminder = (isoStr: string) => {
@@ -43,9 +48,11 @@ export default function MemoItem({ memo, category, variants }: Props) {
 
   return (
     <motion.div
-      className={`memo-item ${memo.completed ? 'completed' : ''}`}
+      className={`memo-item ${memo.completed ? 'completed' : ''} ${memo.pinned ? 'pinned' : ''}`}
       variants={variants}
       layout
+      whileHover={{ scale: 1.01, y: -2 }}
+      whileTap={{ scale: 0.99, boxShadow: 'inset 6px 6px 12px var(--neu-shadow-dark), inset -6px -6px 12px var(--neu-shadow-light)' }}
     >
       {/* Checkbox */}
       <motion.button
@@ -98,6 +105,16 @@ export default function MemoItem({ memo, category, variants }: Props) {
 
       {/* Actions */}
       <div className="memo-actions">
+        <motion.button
+          className={`memo-action-btn ${memo.pinned ? 'pinned' : ''}`}
+          onClick={handlePin}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          title={memo.pinned ? '取消置顶' : '置顶'}
+          style={memo.pinned ? { color: 'var(--accent)' } : {}}
+        >
+          <Pin size={13} />
+        </motion.button>
         <motion.button
           className="memo-action-btn"
           onClick={() => openAddModal(memo)}

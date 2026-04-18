@@ -1,8 +1,21 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, RotateCcw, Keyboard, Check } from 'lucide-react'
+import { X, RotateCcw, Keyboard, Check, Download, Upload, Plus, Pencil, Trash2 } from 'lucide-react'
 import { useMemoStore } from '../store/useMemoStore'
-import { ThemeName, DisplayMode, DISPLAY_MODE_CONFIGS } from '../../shared/types'
+import { ThemeName, DisplayMode, DISPLAY_MODE_CONFIGS, Category, EdgeHideSettings } from '../../shared/types'
+
+// 分类颜色选项
+const CATEGORY_COLORS = [
+  { id: 'blue', name: '蓝色', value: '#7BA3C9' },
+  { id: 'green', name: '绿色', value: '#8FBC8F' },
+  { id: 'amber', name: '金色', value: '#E6C87A' },
+  { id: 'purple', name: '紫色', value: '#B8A9C9' },
+  { id: 'pink', name: '粉色', value: '#E8A8B8' },
+  { id: 'teal', name: '青色', value: '#7FCDCD' }
+]
+
+// 分类图标选项
+const CATEGORY_ICONS = ['💼', '🛒', '🏃', '📚', '🎯', '💡', '🎨', '🎮', '🍜', '✈️', '🏠', '💪']
 
 const THEMES = [
   { id: 'jade' as ThemeName, name: '翡翠绿', color: '#10B981' },
@@ -12,7 +25,7 @@ const THEMES = [
   { id: 'midnight' as ThemeName, name: '深夜黑', color: '#0F172A' }
 ]
 
-// 快捷键录制组件
+// 快捷键录制组件 - 增强动画效果
 function ShortcutRecorder({ value, onSave }: { value: string; onSave: (key: string) => void }) {
   const [recording, setRecording] = useState(false)
   const [keys, setKeys] = useState<string[]>([])
@@ -51,30 +64,111 @@ function ShortcutRecorder({ value, onSave }: { value: string; onSave: (key: stri
 
   if (recording) {
     return (
-      <div
+      <motion.div
         className="shortcut-recorder recording"
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
         tabIndex={0}
         style={{ outline: 'none' }}
+        animate={{
+          scale: [1, 1.02, 1],
+          borderColor: ['var(--accent)', 'var(--accent-hover)', 'var(--accent)']
+        }}
+        transition={{
+          duration: 0.8,
+          repeat: Infinity,
+          ease: 'easeInOut'
+        }}
       >
-        按下快捷键... {keys.join(' + ')}
-      </div>
+        <motion.span
+          animate={{ opacity: [1, 0.5, 1] }}
+          transition={{ duration: 0.6, repeat: Infinity }}
+        >
+          按下快捷键...
+        </motion.span>
+        {keys.length > 0 && (
+          <motion.span
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            style={{ marginLeft: '8px', fontWeight: 600 }}
+          >
+            {keys.join(' + ')}
+          </motion.span>
+        )}
+      </motion.div>
     )
   }
 
   return (
-    <button
+    <motion.button
       className="shortcut-recorder"
       onClick={() => setRecording(true)}
+      whileHover={{ scale: 1.02, borderColor: 'var(--accent)' }}
+      whileTap={{ scale: 0.98 }}
     >
       {formatShortcut(value)}
-    </button>
+    </motion.button>
   )
 }
 
 export default function SettingsPanel() {
-  const { settings, closeSettings, updateSettings } = useMemoStore()
+  const { settings, closeSettings, updateSettings, categories, addCategory, updateCategory, deleteCategory } = useMemoStore()
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null)
+  const [newCategoryName, setNewCategoryName] = useState('')
+  const [newCategoryColor, setNewCategoryColor] = useState('blue')
+  const [newCategoryIcon, setNewCategoryIcon] = useState('💼')
+  const [showCategoryForm, setShowCategoryForm] = useState(false)
+
+  // 新增分类
+  const handleAddCategory = async () => {
+    if (!newCategoryName.trim()) return
+    await addCategory({
+      name: newCategoryName.trim(),
+      color: newCategoryColor,
+      icon: newCategoryIcon
+    })
+    setNewCategoryName('')
+    setNewCategoryColor('blue')
+    setNewCategoryIcon('💼')
+    setShowCategoryForm(false)
+  }
+
+  // 保存分类编辑
+  const handleSaveCategory = async () => {
+    if (!editingCategory || !newCategoryName.trim()) return
+    await updateCategory(editingCategory.id, {
+      name: newCategoryName.trim(),
+      color: newCategoryColor,
+      icon: newCategoryIcon
+    })
+    setEditingCategory(null)
+    setNewCategoryName('')
+    setShowCategoryForm(false)
+  }
+
+  // 开始编辑分类
+  const handleStartEditCategory = (cat: Category) => {
+    setEditingCategory(cat)
+    setNewCategoryName(cat.name)
+    setNewCategoryColor(cat.color)
+    setNewCategoryIcon(cat.icon)
+    setShowCategoryForm(true)
+  }
+
+  // 删除分类
+  const handleDeleteCategory = async (id: string) => {
+    if (!confirm('确定要删除这个分类吗？该分类下的备忘录不会被删除。')) return
+    await deleteCategory(id)
+  }
+
+  // 取消编辑
+  const handleCancelCategory = () => {
+    setEditingCategory(null)
+    setNewCategoryName('')
+    setNewCategoryColor('blue')
+    setNewCategoryIcon('💼')
+    setShowCategoryForm(false)
+  }
 
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) closeSettings()
@@ -115,8 +209,33 @@ export default function SettingsPanel() {
   }
 
   const handleThemeChange = async (theme: ThemeName) => {
-    await updateSettings({ theme })
+    await updateSettings({ theme, darkMode: theme === 'midnight' })
     document.documentElement.setAttribute('data-theme', theme)
+  }
+
+  const handleExport = async () => {
+    const result = await window.electronAPI.memo.export()
+    if (result.success) {
+      alert(`导出成功！保存位置：${result.path}`)
+    } else if (!result.canceled) {
+      alert(`导出失败：${result.error}`)
+    }
+  }
+
+  const handleImport = async () => {
+    if (!confirm('导入会合并现有数据，不会覆盖现有备忘录。确定继续？')) return
+    const result = await window.electronAPI.memo.import()
+    if (result.success) {
+      alert(`导入成功！新增 ${result.imported?.memos} 条备忘录，${result.imported?.categories} 个分类`)
+      window.location.reload()
+    } else if (!result.canceled) {
+      alert(`导入失败：${result.error}`)
+    }
+  }
+
+  const handlePinToggle = async (memoId: string, currentPinned: boolean) => {
+    await window.electronAPI.memo.update(memoId, { pinned: !currentPinned })
+    await useMemoStore.getState().loadAll()
   }
 
   return (
@@ -125,7 +244,9 @@ export default function SettingsPanel() {
         style={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(15, 23, 42, 0.2)',
+          background: 'rgba(15, 23, 42, 0.3)',
+          backdropFilter: 'blur(4px)',
+          WebkitBackdropFilter: 'blur(4px)',
           zIndex: 199
         }}
         onClick={handleOverlayClick}
@@ -135,7 +256,6 @@ export default function SettingsPanel() {
       >
         <motion.div
           className="settings-panel animate-slide-in"
-          style={{ position: 'absolute', right: 0, top: 0, bottom: 0 }}
           initial={{ x: '100%' }}
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
@@ -162,30 +282,38 @@ export default function SettingsPanel() {
               <div className="setting-label">主题</div>
               <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                 {THEMES.map(theme => (
-                  <button
+                  <motion.button
                     key={theme.id}
                     onClick={() => handleThemeChange(theme.id)}
                     title={theme.name}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    animate={settings.theme === theme.id ? {
+                      scale: [1, 1.15, 1],
+                      boxShadow: [`0 0 0 2px ${theme.color}40`, `0 0 0 4px ${theme.color}20`, `0 0 0 2px ${theme.color}40`]
+                    } : {}}
+                    transition={{ duration: 0.3 }}
                     style={{
                       width: '40px',
                       height: '40px',
                       borderRadius: '50%',
                       background: theme.color,
                       border: settings.theme === theme.id
-                        ? '3px solid var(--text-primary)'
+                        ? '3px solid var(--neu-text-primary)'
                         : '2px solid transparent',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       transition: 'all 0.2s ease',
-                      flexShrink: 0
+                      flexShrink: 0,
+                      boxShadow: 'var(--neu-shadow-raised-sm)'
                     }}
                   >
                     {settings.theme === theme.id && (
                       <Check size={16} color="white" />
                     )}
-                  </button>
+                  </motion.button>
                 ))}
               </div>
             </div>
@@ -233,6 +361,73 @@ export default function SettingsPanel() {
                 </label>
               </div>
 
+              {/* 贴边隐藏详细设置 */}
+              {settings.edgeHide && (
+                <div style={{ marginTop: '12px', padding: '10px', background: 'var(--neu-bg-dark)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--neu-shadow-inset-sm)' }}>
+                  <div style={{ fontSize: '11px', color: 'var(--neu-text-muted)', marginBottom: '8px' }}>贴边方向</div>
+                  <div style={{ display: 'flex', gap: '6px', marginBottom: '12px' }}>
+                    {(['left', 'right', 'top', 'bottom'] as const).map(dir => {
+                      const isActive = settings.edgeHideSettings?.directions?.includes(dir) ?? true
+                      const labels: Record<string, string> = { left: '左', right: '右', top: '上', bottom: '下' }
+                      return (
+                        <button
+                          key={dir}
+                          onClick={() => {
+                            const current = settings.edgeHideSettings?.directions ?? ['left', 'right', 'top', 'bottom']
+                            const newDirs = isActive
+                              ? current.filter(d => d !== dir)
+                              : [...current, dir]
+                            if (newDirs.length > 0) {
+                              updateSettings({ edgeHideSettings: { ...settings.edgeHideSettings, directions: newDirs } })
+                            }
+                          }}
+                          style={{
+                            padding: '4px 10px',
+                            borderRadius: '6px',
+                            border: 'none',
+                            background: isActive ? 'var(--neu-accent-soft)' : 'var(--neu-bg)',
+                            color: isActive ? 'var(--neu-accent)' : 'var(--neu-text-muted)',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            boxShadow: isActive ? 'var(--neu-shadow-inset-sm)' : 'var(--neu-shadow-raised-sm)'
+                          }}
+                        >
+                          {labels[dir]}
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  <div style={{ fontSize: '11px', color: 'var(--neu-text-muted)', marginBottom: '6px' }}>
+                    灵敏度 {settings.edgeHideSettings?.threshold ?? 5}px
+                  </div>
+                  <input
+                    className="slider"
+                    type="range"
+                    min="3"
+                    max="15"
+                    step="1"
+                    value={settings.edgeHideSettings?.threshold ?? 5}
+                    onChange={e => updateSettings({ edgeHideSettings: { ...settings.edgeHideSettings, threshold: parseInt(e.target.value) } })}
+                    style={{ marginBottom: '12px', width: '100%' }}
+                  />
+
+                  <div style={{ fontSize: '11px', color: 'var(--neu-text-muted)', marginBottom: '6px' }}>
+                    隐藏延迟 {settings.edgeHideSettings?.hideDelay ?? 800}ms
+                  </div>
+                  <input
+                    className="slider"
+                    type="range"
+                    min="300"
+                    max="1500"
+                    step="100"
+                    value={settings.edgeHideSettings?.hideDelay ?? 800}
+                    onChange={e => updateSettings({ edgeHideSettings: { ...settings.edgeHideSettings, hideDelay: parseInt(e.target.value) } })}
+                    style={{ width: '100%' }}
+                  />
+                </div>
+              )}
+
               {/* 显示模式 */}
               <div style={{ marginTop: '16px' }}>
                 <div className="setting-label" style={{ marginBottom: '10px' }}>显示模式</div>
@@ -244,27 +439,28 @@ export default function SettingsPanel() {
                       style={{
                         padding: '10px 12px',
                         borderRadius: '8px',
-                        border: settings.displayMode === config.mode
-                          ? '2px solid var(--accent)'
-                          : '1px solid var(--border)',
+                        border: 'none',
                         background: settings.displayMode === config.mode
-                          ? 'var(--accent-light)'
-                          : 'transparent',
+                          ? 'var(--neu-accent-soft)'
+                          : 'var(--neu-bg)',
                         cursor: 'pointer',
                         textAlign: 'left',
-                        transition: 'all 0.2s ease'
+                        transition: 'all 0.2s ease',
+                        boxShadow: settings.displayMode === config.mode
+                          ? 'var(--neu-shadow-inset-sm)'
+                          : 'var(--neu-shadow-raised-sm)'
                       }}
                     >
                       <div style={{
                         fontSize: '13px',
                         fontWeight: 500,
-                        color: 'var(--text-primary)'
+                        color: 'var(--neu-text-primary)'
                       }}>
                         {config.name}
                       </div>
                       <div style={{
                         fontSize: '11px',
-                        color: 'var(--text-muted)',
+                        color: 'var(--neu-text-muted)',
                         marginTop: '2px'
                       }}>
                         {config.windowBounds.width}x{config.windowBounds.height}
@@ -328,9 +524,186 @@ export default function SettingsPanel() {
               </button>
             </div>
 
+            {/* 分类管理 */}
+            <div className="setting-item">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <div className="setting-label" style={{ marginBottom: 0 }}>分类管理</div>
+                <motion.button
+                  className="title-bar-btn"
+                  onClick={() => { setShowCategoryForm(true); setEditingCategory(null); setNewCategoryName(''); setNewCategoryColor('blue'); setNewCategoryIcon('💼') }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  style={{ width: '24px', height: '24px' }}
+                >
+                  <Plus size={12} />
+                </motion.button>
+              </div>
+
+              {/* 分类列表 */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {categories.filter(c => !c.isDefault).map(cat => (
+                  <div
+                    key={cat.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 10px',
+                      background: 'var(--neu-bg)',
+                      borderRadius: 'var(--radius-sm)',
+                      boxShadow: 'var(--neu-shadow-raised-sm)'
+                    }}
+                  >
+                    <span style={{ fontSize: '16px' }}>{cat.icon}</span>
+                    <span style={{ flex: 1, fontSize: '13px', color: 'var(--neu-text-primary)' }}>{cat.name}</span>
+                    <div style={{ display: 'flex', gap: '4px' }}>
+                      <motion.button
+                        className="title-bar-btn"
+                        onClick={() => handleStartEditCategory(cat)}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        style={{ width: '22px', height: '22px' }}
+                      >
+                        <Pencil size={11} />
+                      </motion.button>
+                      <motion.button
+                        className="title-bar-btn delete"
+                        onClick={() => handleDeleteCategory(cat.id)}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        style={{ width: '22px', height: '22px' }}
+                      >
+                        <Trash2 size={11} />
+                      </motion.button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* 新增/编辑分类表单 */}
+              <AnimatePresence>
+                {showCategoryForm && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    style={{ marginTop: '12px', overflow: 'hidden' }}
+                  >
+                    <div style={{
+                      padding: '12px',
+                      background: 'var(--neu-bg-dark)',
+                      borderRadius: 'var(--radius-md)',
+                      boxShadow: 'var(--neu-shadow-inset-sm)'
+                    }}>
+                      <input
+                        type="text"
+                        className="form-input"
+                        placeholder="分类名称"
+                        value={newCategoryName}
+                        onChange={e => setNewCategoryName(e.target.value)}
+                        style={{ marginBottom: '10px' }}
+                      />
+                      <div style={{ marginBottom: '10px' }}>
+                        <div style={{ fontSize: '11px', color: 'var(--neu-text-muted)', marginBottom: '6px' }}>图标</div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                          {CATEGORY_ICONS.map(icon => (
+                            <button
+                              key={icon}
+                              onClick={() => setNewCategoryIcon(icon)}
+                              style={{
+                                width: '28px',
+                                height: '28px',
+                                border: newCategoryIcon === icon ? '2px solid var(--neu-accent)' : 'none',
+                                borderRadius: 'var(--radius-sm)',
+                                background: 'var(--neu-bg)',
+                                boxShadow: newCategoryIcon === icon ? 'var(--neu-shadow-raised-sm)' : 'none',
+                                cursor: 'pointer',
+                                fontSize: '14px'
+                              }}
+                            >
+                              {icon}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div style={{ marginBottom: '10px' }}>
+                        <div style={{ fontSize: '11px', color: 'var(--neu-text-muted)', marginBottom: '6px' }}>颜色</div>
+                        <div style={{ display: 'flex', gap: '6px' }}>
+                          {CATEGORY_COLORS.map(color => (
+                            <button
+                              key={color.id}
+                              onClick={() => setNewCategoryColor(color.id)}
+                              style={{
+                                width: '24px',
+                                height: '24px',
+                                border: newCategoryColor === color.id ? '2px solid var(--neu-text-primary)' : 'none',
+                                borderRadius: '50%',
+                                background: color.value,
+                                cursor: 'pointer'
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button className="btn btn-cancel" onClick={handleCancelCategory} style={{ flex: 1, padding: '8px' }}>
+                          取消
+                        </button>
+                        <button className="btn btn-primary" onClick={editingCategory ? handleSaveCategory : handleAddCategory} style={{ flex: 1, padding: '8px' }}>
+                          {editingCategory ? '保存' : '添加'}
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             {/* 分隔线 */}
             <div style={{ borderTop: '1px solid var(--border)', marginTop: '8px', paddingTop: '20px' }}>
-              <div style={{ fontSize: '12px', color: 'var(--text-muted)', textAlign: 'center' }}>
+              {/* 数据管理 */}
+              <div className="setting-item">
+                <div className="setting-label">数据管理</div>
+                <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                  <button className="btn-reset" onClick={handleExport} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                    <Download size={13} />
+                    导出
+                  </button>
+                  <button className="btn-reset" onClick={handleImport} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                    <Upload size={13} />
+                    导入
+                  </button>
+                </div>
+              </div>
+
+              {/* 暗色主题 */}
+              <div className="setting-item" style={{ marginTop: '16px' }}>
+                <div className="setting-label">外观</div>
+                <div className="toggle-container" style={{ marginTop: '8px' }}>
+                  <span className="toggle-label">深色模式</span>
+                  <label className="toggle">
+                    <input
+                      type="checkbox"
+                      checked={settings.darkMode || false}
+                      onChange={e => updateSettings({ darkMode: e.target.checked })}
+                    />
+                    <span className="toggle-slider" />
+                  </label>
+                </div>
+                <div className="toggle-container" style={{ marginTop: '12px' }}>
+                  <span className="toggle-label">通知声音</span>
+                  <label className="toggle">
+                    <input
+                      type="checkbox"
+                      checked={settings.notificationSound ?? true}
+                      onChange={e => updateSettings({ notificationSound: e.target.checked })}
+                    />
+                    <span className="toggle-slider" />
+                  </label>
+                </div>
+              </div>
+
+              <div style={{ fontSize: '12px', color: 'var(--neu-text-muted)', textAlign: 'center', marginTop: '20px' }}>
                 桌面备忘录 v1.0.1
               </div>
             </div>
