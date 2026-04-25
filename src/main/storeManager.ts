@@ -50,8 +50,7 @@ export function saveMemos(memos: Memo[]): void {
 }
 
 export function addMemo(memo: Memo): void {
-  const memos = getMemos()
-  memos.push(memo)
+  const memos = [...getMemos(), memo]
   store.set('memos', memos)
 }
 
@@ -59,14 +58,13 @@ export function updateMemo(id: string, updates: Partial<Memo>): Memo | null {
   const memos = getMemos()
   const index = memos.findIndex(m => m.id === id)
   if (index === -1) return null
-  memos[index] = { ...memos[index], ...updates }
-  store.set('memos', memos)
-  return memos[index]
+  const updated = { ...memos[index], ...updates }
+  store.set('memos', memos.map((m, i) => (i === index ? updated : m)))
+  return updated
 }
 
 export function deleteMemo(id: string): void {
-  const memos = getMemos().filter(m => m.id !== id)
-  store.set('memos', memos)
+  store.set('memos', getMemos().filter(m => m.id !== id))
 }
 
 // ============ Categories ============
@@ -79,23 +77,21 @@ export function saveCategories(categories: Category[]): void {
 }
 
 export function addCategory(category: Category): void {
-  const categories = getCategories()
-  categories.push(category)
+  const categories = [...getCategories(), category]
   store.set('categories', categories)
 }
 
 export function deleteCategory(id: string): void {
-  const categories = getCategories().filter(c => c.id !== id)
-  store.set('categories', categories)
+  store.set('categories', getCategories().filter(c => c.id !== id))
 }
 
 export function updateCategory(id: string, updates: Partial<Category>): Category | null {
   const categories = getCategories()
   const index = categories.findIndex(c => c.id === id)
   if (index === -1) return null
-  categories[index] = { ...categories[index], ...updates }
-  store.set('categories', categories)
-  return categories[index]
+  const updated = { ...categories[index], ...updates }
+  store.set('categories', categories.map((c, i) => (i === index ? updated : c)))
+  return updated
 }
 
 // ============ Settings ============

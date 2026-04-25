@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, RotateCcw, Keyboard, Check, Download, Upload, Plus, Pencil, Trash2 } from 'lucide-react'
 import { useMemoStore } from '../store/useMemoStore'
@@ -119,6 +119,21 @@ export default function SettingsPanel() {
   const [newCategoryIcon, setNewCategoryIcon] = useState('💼')
   const [showCategoryForm, setShowCategoryForm] = useState(false)
 
+  // 打开设置面板时验证 OS 实际自启状态
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const osStatus = await window.electronAPI.settings.getAutoStartStatus()
+        if (settings.autoStart !== osStatus) {
+          console.log('[Settings] OS auto-start status mismatch, syncing:', osStatus)
+          await updateSettings({ autoStart: osStatus })
+        }
+      } catch (err) {
+        console.error('[Settings] Failed to verify auto-start status:', err)
+      }
+    })()
+  }, [])
+
   // 新增分类
   const handleAddCategory = async () => {
     if (!newCategoryName.trim()) return
@@ -185,8 +200,23 @@ export default function SettingsPanel() {
   }
 
   const handleAutoStartChange = async (checked: boolean) => {
-    await updateSettings({ autoStart: checked })
-    await window.electronAPI.settings.setAutoStart(checked)
+    const result = await window.electronAPI.settings.setAutoStart(checked, checked ? settings.silentStartup : false)
+    if (result.success) {
+      await updateSettings({ autoStart: checked })
+    } else {
+      alert(`设置开机自启失败：${result.error || '未知错误'}`)
+    }
+  }
+
+  const handleSilentStartupChange = async (checked: boolean) => {
+    await updateSettings({ silentStartup: checked })
+    // 如果开机自启已开启，立即更新 OS 注册
+    if (settings.autoStart) {
+      const result = await window.electronAPI.settings.setAutoStart(true, checked)
+      if (!result.success) {
+        alert(`设置静默启动失败：${result.error || '未知错误'}`)
+      }
+    }
   }
 
   const handleEdgeHideChange = async (checked: boolean) => {
@@ -485,6 +515,19 @@ export default function SettingsPanel() {
                   <span className="toggle-slider" />
                 </label>
               </div>
+              {settings.autoStart && (
+                <div className="toggle-container" style={{ marginTop: '8px', marginLeft: '24px' }}>
+                  <span className="toggle-label" style={{ fontSize: '12px' }}>静默启动（启动时隐藏窗口）</span>
+                  <label className="toggle">
+                    <input
+                      type="checkbox"
+                      checked={settings.silentStartup ?? false}
+                      onChange={e => handleSilentStartupChange(e.target.checked)}
+                    />
+                    <span className="toggle-slider" />
+                  </label>
+                </div>
+              )}
             </div>
 
             {/* 快捷键 */}

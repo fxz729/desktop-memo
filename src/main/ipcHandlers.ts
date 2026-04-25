@@ -5,6 +5,7 @@ import {
   getSettings, saveSettings
 } from './storeManager'
 import { setWindowOpacity, setWindowAlwaysOnTop, resetWindowPosition, setWindowBounds, setDisplayMode } from './windowManager'
+import { setAutoStart, getAutoStartStatus } from './autoStartManager'
 import { ReminderService } from './reminderService'
 import { Memo, DisplayMode } from '../shared/types'
 import type { Shortcuts } from '../shared/types'
@@ -112,20 +113,17 @@ export function registerIpcHandlers(): void {
     refreshGlobalShortcuts()
   })
 
-  ipcMain.handle('settings:setAutoStart', (_, enable: boolean) => {
-    try {
-      // 开机自启时传递 --hidden 参数，让窗口启动时隐藏
-      app.setLoginItemSettings({
-        openAtLogin: enable,
-        args: enable ? ['--hidden'] : []
-      })
+  ipcMain.handle('settings:getAutoStartStatus', () => {
+    return getAutoStartStatus()
+  })
+
+  ipcMain.handle('settings:setAutoStart', (_, enable: boolean, silent?: boolean) => {
+    const result = setAutoStart(enable, silent)
+    if (result.success) {
       const currentSettings = getSettings()
-      saveSettings({ ...currentSettings, autoStart: enable })
-      return { success: true }
-    } catch (error) {
-      console.error('Failed to set auto-start:', error)
-      return { success: false, error: (error as Error).message }
+      saveSettings({ ...currentSettings, autoStart: enable, silentStartup: silent ?? currentSettings.silentStartup })
     }
+    return result
   })
 
   // ========== 导入/导出 ==========

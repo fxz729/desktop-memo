@@ -114,6 +114,7 @@ export interface EdgeHideSettings {
 
 export interface AppSettings {
   autoStart: boolean
+  silentStartup?: boolean
   windowBounds: { x: number; y: number; width: number; height: number }
   opacity: number
   alwaysOnTop: boolean

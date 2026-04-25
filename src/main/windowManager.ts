@@ -2,6 +2,7 @@ import { BrowserWindow, screen } from 'electron'
 import { join }from 'path'
 import { is } from '@electron-toolkit/utils'
 import { getSettings, saveSettings } from './storeManager'
+import { isSilentStartup } from './autoStartManager'
 import { DisplayMode, DISPLAY_MODE_CONFIGS } from '../shared/types'
 
 let isAutoHidden = false
@@ -66,8 +67,7 @@ export function setupWindowManager(): BrowserWindow {
   }
 
   win.on('ready-to-show', () => {
-    const isHidden = process.argv.includes('--hidden')
-    if (!isHidden) {
+    if (!isSilentStartup()) {
       win.show()
     }
     // 启动鼠标检测

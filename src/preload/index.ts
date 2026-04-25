@@ -20,7 +20,8 @@ export interface ElectronAPI {
   settings: {
     get: () => Promise<AppSettings>
     save: (settings: AppSettings) => Promise<void>
-    setAutoStart: (enable: boolean) => Promise<{ success: boolean; error?: string }>
+    getAutoStartStatus: () => Promise<boolean>
+    setAutoStart: (enable: boolean, silent?: boolean) => Promise<{ success: boolean; error?: string }>
     refreshShortcuts: () => Promise<void>
   }
   window: {
@@ -34,6 +35,7 @@ export interface ElectronAPI {
   }
   on: (channel: string, callback: (...args: unknown[]) => void) => void
   off: (channel: string, callback: (...args: unknown[]) => void) => void
+  onEdgeHideChanged: (callback: (data: { isAutoHidden: boolean; edge: string | null; stripSize: number }) => void) => void
 }
 
 const api: ElectronAPI = {
@@ -55,7 +57,8 @@ const api: ElectronAPI = {
   settings: {
     get: () => ipcRenderer.invoke('settings:get'),
     save: (settings) => ipcRenderer.invoke('settings:save', settings),
-    setAutoStart: (enable) => ipcRenderer.invoke('settings:setAutoStart', enable),
+    getAutoStartStatus: () => ipcRenderer.invoke('settings:getAutoStartStatus'),
+    setAutoStart: (enable, silent) => ipcRenderer.invoke('settings:setAutoStart', enable, silent),
     refreshShortcuts: () => ipcRenderer.invoke('settings:refreshShortcuts')
   },
   window: {
